@@ -1,10 +1,10 @@
-# GPS track record Visualizer
-    Simple Web application that plot gps track file (.csv) on map.
+# GPS track record Visualizer (1.0.0)
+    Simple Web application that plot GPS track file (.csv) on map.
 
 ## Features
 1. Center view point of map base on track data area.
-2. Radius of plots are based on the pase. 
-3. Adjectable sample size for pase calculation.
+2. Radius of plots are based on the pace. 
+3. Adjustable  sample size for pace calculation.
 
 ## Plugins
 1. Leaflet.js

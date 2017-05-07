@@ -19,16 +19,16 @@
      <script src="functions.js"></script>
 
      <script>
-        L.mapbox.accessToken = 'put in your access token here'; 
+        L.mapbox.accessToken = 'put your access token here'; 
         var map,
-            pase_sample_size = 3, //calculate pase for every pase_sample_size sample
-            Lot_array = [], Lat_array = [], Time_array = [], pase_array = [],
+            pace_sample_size = 3, //calculate pace for every pace_sample_size sample
+            Lot_array = [], Lat_array = [], Time_array = [], pace_array = [],
             radius_scale;
 
         d3.csv("sample_gps_track_file.csv")
           .get(function(ArrayOfObject){
               ArrayOfObject.forEach(converter);
-              cal_pase(ArrayOfObject);
+              cal_pace(ArrayOfObject);
 
               map = L.mapbox.map('map', 'mapbox.streets')
                .setView([d3.mean(Lot_array),
@@ -37,7 +37,7 @@
 
              radius_scale = d3.scaleLinear();
                 radius_scale.range([0,15]); 
-                radius_scale.domain([d3.min(pase_array), d3.max(pase_array)]);
+                radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
             
              render(); //plotting track
           });

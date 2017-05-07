@@ -1,25 +1,25 @@
          
-         //compute pase and store in pase_array
-         function cal_pase(dataSet){
-            var avg_pase, points_dis = 0, points_dur; //distance and duration between sample_size points
+         //compute pace and store in pace_array
+         function cal_pace(dataSet){
+            var avg_pace, points_dis = 0, points_dur; //distance and duration between sample_size points
 
-            for( var pos = 0; pos < dataSet.length - pase_sample_size; pos++){
+            for( var pos = 0; pos < dataSet.length - pace_sample_size; pos++){
 
-                if(pos % pase_sample_size != 0){
+                if(pos % pace_sample_size != 0){
                     points_dis += Math.abs(dataSet[pos].X - dataSet[pos + 1].X) + 
                                   Math.abs(dataSet[pos].Y - dataSet[pos + 1].Y);
                 }
-                else if(pos % pase_sample_size == 0 && pos != 0){
+                else if(pos % pace_sample_size == 0 && pos != 0){
                     points_dur = (Time_array[pos].getMinutes() + Time_array[pos].getSeconds()/60) - //duration between 1st and last sample size points
-                                 (Time_array[pos - pase_sample_size].getMinutes() + Time_array[pos - pase_sample_size].getSeconds()/60); 
-                    pase_array.push(
-                        points_dis / points_dur //we use speed here instaed of the actual "pase"
+                                 (Time_array[pos - pace_sample_size].getMinutes() + Time_array[pos - pace_sample_size].getSeconds()/60); 
+                    pace_array.push(
+                        points_dis / points_dur //we use speed here instaed of the actual "pace"
                     );
                 }
             }
 
-            for(var pos2 = dataSet.length - pase_sample_size; pos2 < dataSet.length; pos2++){ //make up the last pase data at the end
-                pase_array.push(pase_array[pase_array.length - 1]); 
+            for(var pos2 = dataSet.length - pace_sample_size; pos2 < dataSet.length; pos2++){ //make up the last pace data at the end
+                pace_array.push(pace_array[pace_array.length - 1]); 
             }
          }
          
@@ -54,7 +54,7 @@
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.8,
-                    radius: radius_scale(pase_array[Math.round(pos / pase_sample_size)])
+                    radius: radius_scale(pace_array[Math.round(pos / pace_sample_size)])
                 })
                 .addTo(map);
             }
