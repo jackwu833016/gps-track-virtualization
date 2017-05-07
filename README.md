@@ -1,4 +1,4 @@
-# GPS track record Visualizer (1.0.0)
+# GPS track record Visualizer (1.0.1)
     Simple Web application that plot GPS track file (.csv) on map.
 
 ## Features

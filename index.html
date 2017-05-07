@@ -12,35 +12,29 @@
      <!--D3 files-->
      <script src="https://d3js.org/d3.v4.min.js"></script>
 
+     <!--utility functions file-->
+     <script src="src/function_utility.js"></script>
+
+     <!--jQuery file-->
+     <script src="src/jquery-3.2.1.min.js"></script>
+
+     <!--JS files-->
+     <script src="src/map_functions.js"></script>
+
 </head>
 
 <body>
      <div id="map" style="width: 1000px; height: 700px"></div>
-     <script src="functions.js"></script>
 
      <script>
-        L.mapbox.accessToken = 'put your access token here'; 
-        var map,
-            pace_sample_size = 3, //calculate pace for every pace_sample_size sample
+         var map, //--global variables
+            pace_sample_size = 5, //calculate pace for every pace_sample_size sample
             Lot_array = [], Lat_array = [], Time_array = [], pace_array = [],
             radius_scale;
-
-        d3.csv("sample_gps_track_file.csv")
-          .get(function(ArrayOfObject){
-              ArrayOfObject.forEach(converter);
-              cal_pace(ArrayOfObject);
-
-              map = L.mapbox.map('map', 'mapbox.streets')
-               .setView([d3.mean(Lot_array),
-                         d3.mean(Lat_array)],
-                         14); //init map
-
-             radius_scale = d3.scaleLinear();
-                radius_scale.range([0,15]); 
-                radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
             
-             render(); //plotting track
-          });
+      L.mapbox.accessToken = readin_accessToken("src/accessToken.txt"); 
+      render_map();
+     
      </script>
      
 </body>

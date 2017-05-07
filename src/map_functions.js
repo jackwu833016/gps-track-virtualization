@@ -47,9 +47,7 @@
          
          //rendering data onto map
          function render(){
-            
             for( var pos = 0; pos < Lot_array.length - 1; pos++) {
-
                 L.circle([Lot_array[pos], Lat_array[pos]], {
                     color: 'red',
                     fillColor: '#f03',
@@ -59,4 +57,37 @@
                 .addTo(map);
             }
          }
+
+         //readin accessToken from external file for mapbox
+         function readin_accessToken(URL){
+            var raw_data = "";
+            $.ajax({
+                url: URL,
+                success: function(data){
+                    raw_data = data;
+                },
+                async: false
+                });
+            return raw_data;
+         }
+
+    //render map in DOM
+    function render_map(){
+        d3.csv("sample_gps_track_file.csv")
+          .get(function(ArrayOfObject){
+              ArrayOfObject.forEach(converter);
+              cal_pace(ArrayOfObject);
+
+              map = L.mapbox.map('map', 'mapbox.streets')
+               .setView([d3.mean(Lot_array),
+                         d3.mean(Lat_array)],
+                         14); //init map
+
+             radius_scale = d3.scaleLinear();
+                radius_scale.range([0,15]); 
+                radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
+            
+             render(); //plotting track
+          });
+    }
          
