@@ -19,9 +19,10 @@
     <!--jQuery file-->
     <script src="src/jquery-3.2.1.min.js"></script>
 
-    <!--core js files-->
+    <!--core js & css files-->
     <script src="src/map_functions.js"></script>
     <script src="src/functions.js"></script>
+    <link href='style.css' rel='stylesheet' />
 
 
     <!--Bootstrap file-->
@@ -34,19 +35,19 @@
     <div class="container-fluid">
         <div class="row" id="topRow">
             <input type="file" id="fileInput" onchange="handleFiles(this.files)">
+            <div class="row" id="graphRow" style="visibility: hidden"></div>
         </div>
         <div class="row" id="mapRow">
             <div id="map" style="visibility: hidden"></div>
         </div>
     </div>
+
     <script>
-        var map, //--global variables
+        //--global variables
+        var map,
             pace_sample_size = 5, //calculate pace for every pace_sample_size sample
             Lot_array = [], Lat_array = [], Time_array = [], pace_array = [],
-            radius_scale, csvFileObj;
-
-        L.mapbox.accessToken = readin_accessToken("src/accessToken.txt");
-        render_map();
+            radius_scale, csvFileRawData;
     </script>
 
 </body>

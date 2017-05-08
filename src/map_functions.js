@@ -45,19 +45,6 @@ function converter(record_ele) {
     return record_ele;
 }
 
-//rendering data onto map
-function render() {
-    for (var pos = 0; pos < Lot_array.length - 1; pos++) {
-        L.circle([Lot_array[pos], Lat_array[pos]], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.8,
-            radius: radius_scale(pace_array[Math.round(pos / pace_sample_size)])
-        })
-            .addTo(map);
-    }
-}
-
 //readin accessToken from external file for mapbox
 function readin_accessToken(URL) {
     var raw_data = "";
@@ -68,25 +55,50 @@ function readin_accessToken(URL) {
         },
         async: false
     });
-    return raw_data;
+
+    if (raw_data == ""){ //accessToken is missing
+        printWarn("AccessToken is missing");
+    } else return raw_data;
+}
+
+//make map DOM visible 
+function display_map(){
+    var topRow_height = document.getElementById("topRow").clientHeight,
+        
+        map_obj = document.getElementById("map"),
+        browser_height = $(window).height(),
+        browser_width = $(window).width();
+
+        map_obj.style.height = parseFloat(browser_height - topRow_height) + "px"; //set height and width for map object
+        map_obj.style.width = parseFloat(browser_width) + "px";
+        map_obj.style.visibility = "visible";
 }
 
 //render map in DOM
 function render_map() {
-    d3.csv("sample_gps_track_file.csv")
-        .get(function (ArrayOfObject) {
-            ArrayOfObject.forEach(converter); //convert csv data into arrays for d3 operations 
-            cal_pace(ArrayOfObject); //calculate pase and store into pase array
 
-            map = L.mapbox.map('map', 'mapbox.streets')
-                .setView([d3.mean(Lot_array),
-                d3.mean(Lat_array)],
-                14); //init map and set center viewpoint accroding to data set
+    L.mapbox.accessToken = readin_accessToken("src/accessToken.txt");
 
-            radius_scale = d3.scaleLinear();
-            radius_scale.range([0, 15]);
-            radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
+    csvFileRawData.forEach(converter); //convert csv data into arrays for d3 operations 
+    cal_pace(csvFileRawData); //calculate pase and store into pase array
 
-            render(); //plotting track
-        });
+    map = L.mapbox.map('map', 'mapbox.streets')
+        .setView([d3.mean(Lot_array),
+        d3.mean(Lat_array)],
+        14); //init map and set center viewpoint accroding to data set
+
+    radius_scale = d3.scaleLinear();
+    radius_scale.range([0, 15]);
+    radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
+
+    //plotting track
+    for (var pos = 0; pos < Lot_array.length - 1; pos++) {
+        L.circle([Lot_array[pos], Lat_array[pos]], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.8,
+            radius: radius_scale(pace_array[Math.round(pos / pace_sample_size)])
+        })
+            .addTo(map);
+    }
 }

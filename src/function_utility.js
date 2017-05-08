@@ -4,3 +4,8 @@
 function print(message){
     console.log(message);
 }
+
+/** display warning to user */
+function printWarn(message){
+    console.log(message);
+}
