@@ -1,42 +1,54 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!--Loadin leaflet files-->
-     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 
-     <!--Mapbox files-->
-     <script src='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.standalone.js'></script>
-     <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
+    <!--Mapbox files-->
+    <script src='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.standalone.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
 
-     <!--D3 files-->
-     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!--D3 files-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 
-     <!--utility functions file-->
-     <script src="src/function_utility.js"></script>
+    <!--utility functions file-->
+    <script src="src/function_utility.js"></script>
 
-     <!--jQuery file-->
-     <script src="src/jquery-3.2.1.min.js"></script>
+    <!--jQuery file-->
+    <script src="src/jquery-3.2.1.min.js"></script>
 
-     <!--JS files-->
-     <script src="src/map_functions.js"></script>
+    <!--core js files-->
+    <script src="src/map_functions.js"></script>
+    <script src="src/functions.js"></script>
+
+
+    <!--Bootstrap file-->
+    <link rel="stylesheet" href="src/bootstrap.min.css" />
+    <script src="src/jquery-3.2.1.min.js"></script>
 
 </head>
 
 <body>
-     <div id="map" style="width: 1000px; height: 700px"></div>
-
-     <script>
-         var map, //--global variables
+    <div class="container-fluid">
+        <div class="row" id="topRow">
+            <input type="file" id="fileInput" onchange="handleFiles(this.files)">
+        </div>
+        <div class="row" id="mapRow">
+            <div id="map" style="visibility: hidden"></div>
+        </div>
+    </div>
+    <script>
+        var map, //--global variables
             pace_sample_size = 5, //calculate pace for every pace_sample_size sample
             Lot_array = [], Lat_array = [], Time_array = [], pace_array = [],
-            radius_scale;
-            
-      L.mapbox.accessToken = readin_accessToken("src/accessToken.txt"); 
-      render_map();
-     
-     </script>
-     
+            radius_scale, csvFileObj;
+
+        L.mapbox.accessToken = readin_accessToken("src/accessToken.txt");
+        render_map();
+    </script>
+
 </body>
 
 </html>
