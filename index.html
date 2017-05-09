@@ -19,31 +19,48 @@
     <!--jQuery file-->
     <script src="src/lib/jquery-3.2.1.min.js"></script>
 
+    <!--Bootstrap file-->
+    <link rel="stylesheet" href="src/lib/bootstrap.min.css" />
+    <script src="src/lib/jquery-3.2.1.min.js"></script>
+
+    <!--Google Charts Library & components-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load("current", { packages: ["corechart"] });
+    </script>
+
     <!--core js & css files-->
     <script src="src/map_functions.js"></script>
     <script src="src/chart_functions.js"></script>
     <script src="src/functions.js"></script>
     <link href='style.css' rel='stylesheet' />
 
-    <!--Bootstrap file-->
-    <link rel="stylesheet" href="src/lib/bootstrap.min.css" />
-    <script src="src/lib/jquery-3.2.1.min.js"></script>
-
-    <!--Load Google Charts Library & components-->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>
-        google.charts.load("current", { packages: ["corechart"] });
-    </script>
-
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row" id="topRow">
-            <input type="file" id="fileInput" onchange="handleFiles(this.files)">
-            <button id="demoBtn" onclick="demoMode()">Demo</button>
-            <div class="row" id="chartRow" style="height: 150px; width: 100%;"></div>
+    <nav class="navbar navbar-default" id="navBar">
+        <div class="container-fluid">
+            <a class="navbar-brand"><b>GPS track Visualizer</b> by Jack Wu</a>
+            <a class="navbar-right navbar-brand" href="https://github.com/jackwu833016/gps-track-virtualization">
+                <img alt="view on GitHub" src="src/github_icon.png" style="height: 25px">
+            </a>
+            <label class="btn btn-default navbar-btn" id="fileInput">
+                Upload csv File 
+                <input style="display: none" type="file" onchange="handleFiles(this.files)">
+            </label>
+            <button type="button" class="btn btn-default navbar-btn" id="demoBtn" onclick="demoMode()">Demo</button>
         </div>
+    </nav>
+
+    <div class="container-fluid" id="content_container">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="chartRow" style="width: 100%"></div>
+            </div>
+            <div class="col-md-6" id="controller">
+            </div>
+        </div>
+
         <div class="row" id="mapRow">
             <div id="map" style="visibility: hidden"></div>
         </div>

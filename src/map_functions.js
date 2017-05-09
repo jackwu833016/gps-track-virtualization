@@ -77,7 +77,7 @@ function display_map_chart() {
 
     var browser_height = $(window).height(),
         browser_width = $(window).width(),
-        topRow_height = document.getElementById("topRow").clientHeight,
+        topRow_height = document.getElementById("navBar").clientHeight,
         map_obj = document.getElementById("map");
 
     map_obj.style.height = parseFloat(browser_height - topRow_height) + "px"; //set height and width for map object
