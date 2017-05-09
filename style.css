@@ -1,4 +1,31 @@
-.container{
+.nopaddingmargin{
     padding: 0px;
     margin: 0px;
+}
+
+#cav_raw_data_textarea{
+    height: 100%;
+    width: 90%;
+    resize: none;
+    border: none; 
+}
+nav{
+    margin-bottom: 5px !important;
+}
+
+/*Disable horizontal scroll*/
+html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+/*Responsive styling*/
+@media (min-width: 768px){
+    #InfoDiv{
+        margin-left: 2em;
+    }
+}
+@media (min-width: 992px){
+    #InfoDiv{
+        margin-left: 0px;
+    }
 }

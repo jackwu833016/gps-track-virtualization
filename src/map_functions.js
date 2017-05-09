@@ -74,25 +74,22 @@ function readin_accessToken(URL) {
 function display_map_chart() {
     document.getElementById("fileInput").style.visibility = "hidden";//hide buttons
     document.getElementById("demoBtn").style.visibility = "hidden";
-
     var browser_height = $(window).height(),
-        browser_width = $(window).width(),
-        topRow_height = document.getElementById("navBar").clientHeight,
+        browser_width = $("#navBar").width(),
+        topRow_height = document.getElementById("navBar").offsetHeight + 
+                        document.getElementById("topRow").offsetHeight,
         map_obj = document.getElementById("map");
 
-    map_obj.style.height = parseFloat(browser_height - topRow_height) + "px"; //set height and width for map object
-    map_obj.style.width = parseFloat(browser_width) + "px";
+    map_obj.style.height = parseFloat(browser_height - topRow_height) * 0.99 + "px"; //set height and width for map object
+    map_obj.style.width = parseFloat(browser_width) + "px"; 
     map_obj.style.visibility = "visible";
+    document.getElementById("cav_raw_data_textarea").style.visibility = "visible" //make raw data win visible
 }
 
 //render map in DOM
 function render_map() {
 
     L.mapbox.accessToken = readin_accessToken("src/accessToken.txt");
-
-    csvFileRawData.forEach(converter); //convert csv data into arrays for d3 operations 
-    cal_dis(); //calculate dis between coor and total dis
-    cal_pace(csvFileRawData); //calculate pase and store into pase array
 
     map = L.mapbox.map('map', 'mapbox.streets')
         .setView([d3.mean(Lot_array),

@@ -39,10 +39,31 @@ function demoMode() {
 
 //start analysis file and render all the graphes
 function startAnalysis() {
+
+    //data processing
+    csvFileRawData.forEach(converter); //convert csv data into arrays for d3 operations 
+    cal_dis(); //calculate dis between coor and total dis
+    cal_pace(csvFileRawData); //calculate pase and store into pase array
+
+    //render everything
+    render_chart();
+    dis_track_info();
     display_map_chart(); //make map visible
     render_map(); //start rendering map
-    render_chart();
+}
 
+//gather track info & cav raw data 
+function dis_track_info() {
+    var info_ele = document.getElementById("track_info"),
+        cav_dis_ele = document.getElementById("cav_raw_data_textarea"),
+        dur_millisecond = (Time_array[Time_array.length - 1] - Time_array[0]);
+
+    info_ele.innerHTML =
+        "<b>Duration:</b> " + (dur_millisecond / 60000).toFixed(0) + ":" + (dur_millisecond % 60000 * 60) + "<br>" +
+        "<b>Top pace:</b> " + d3.min(pace_array).toFixed(2) + " Min/km " + "<b> Avg pace: </b>" + d3.mean(pace_array).toFixed(2) + " Min/km " + "<br>" +
+        "<b>Distance:</b> " + Dis_array[Dis_array.length - 1].toFixed(2) + " km" + "<br>" +
+        "<h6>Raw Data:</h6>";
+    cav_dis_ele.innerText = d3.csvFormat(csvFileRawData); //convert data array back to string for display
 }
 
 //calculate distance between two points (reference: Haversine Formula)
