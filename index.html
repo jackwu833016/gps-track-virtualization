@@ -1,48 +1,62 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!--Loadin leaflet files-->
-     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 
-     <!--Mapbox files-->
-     <script src='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.standalone.js'></script>
-     <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
+    <!--Mapbox files-->
+    <script src='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.standalone.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v3.1.0/mapbox.css' rel='stylesheet' />
 
-     <!--D3 files-->
-     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!--D3 files-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <!--utility functions file-->
+    <script src="src/function_utility.js"></script>
+
+    <!--jQuery file-->
+    <script src="src/lib/jquery-3.2.1.min.js"></script>
+
+    <!--core js & css files-->
+    <script src="src/map_functions.js"></script>
+    <script src="src/chart_functions.js"></script>
+    <script src="src/functions.js"></script>
+    <link href='style.css' rel='stylesheet' />
+
+    <!--Bootstrap file-->
+    <link rel="stylesheet" href="src/lib/bootstrap.min.css" />
+    <script src="src/lib/jquery-3.2.1.min.js"></script>
+
+    <!--Load Google Charts Library & components-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load("current", { packages: ["corechart"] });
+    </script>
 
 </head>
 
 <body>
-     <div id="map" style="width: 1000px; height: 700px"></div>
-     <script src="functions.js"></script>
+    <div class="container-fluid">
+        <div class="row" id="topRow">
+            <input type="file" id="fileInput" onchange="handleFiles(this.files)">
+            <button id="demoBtn" onclick="demoMode()">Demo</button>
+            <div class="row" id="chartRow" style="height: 150px; width: 100%;"></div>
+        </div>
+        <div class="row" id="mapRow">
+            <div id="map" style="visibility: hidden"></div>
+        </div>
+    </div>
 
-     <script>
-        L.mapbox.accessToken = 'put your access token here'; 
+    <script>
+        //--global variables
         var map,
-            pace_sample_size = 3, //calculate pace for every pace_sample_size sample
-            Lot_array = [], Lat_array = [], Time_array = [], pace_array = [],
-            radius_scale;
+            pace_sample_size = 10, //calculate pace for every pace_sample_size sample
+            Lot_array = [], Lat_array = [], Time_array = [], pace_array = [], Dis_array = [],
+            radius_scale, csvFileRawData, total_dis = 0;
+    </script>
 
-        d3.csv("sample_gps_track_file.csv")
-          .get(function(ArrayOfObject){
-              ArrayOfObject.forEach(converter);
-              cal_pace(ArrayOfObject);
-
-              map = L.mapbox.map('map', 'mapbox.streets')
-               .setView([d3.mean(Lot_array),
-                         d3.mean(Lat_array)],
-                         14); //init map
-
-             radius_scale = d3.scaleLinear();
-                radius_scale.range([0,15]); 
-                radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
-            
-             render(); //plotting track
-          });
-     </script>
-     
 </body>
 
 </html>
