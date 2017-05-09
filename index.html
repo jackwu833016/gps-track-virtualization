@@ -21,13 +21,19 @@
 
     <!--core js & css files-->
     <script src="src/map_functions.js"></script>
+    <script src="src/chart_functions.js"></script>
     <script src="src/functions.js"></script>
     <link href='style.css' rel='stylesheet' />
-
 
     <!--Bootstrap file-->
     <link rel="stylesheet" href="src/bootstrap.min.css" />
     <script src="src/jquery-3.2.1.min.js"></script>
+
+    <!--Load Google Charts Library & components-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load("current", { packages: ["corechart"] });
+    </script>
 
 </head>
 
@@ -35,7 +41,8 @@
     <div class="container-fluid">
         <div class="row" id="topRow">
             <input type="file" id="fileInput" onchange="handleFiles(this.files)">
-            <div class="row" id="graphRow" style="visibility: hidden"></div>
+            <button id="demoBtn" onclick="demoMode()">Demo</button>
+            <div class="row" id="chartRow" style="height: 150px; width: 100%;"></div>
         </div>
         <div class="row" id="mapRow">
             <div id="map" style="visibility: hidden"></div>
@@ -45,9 +52,9 @@
     <script>
         //--global variables
         var map,
-            pace_sample_size = 5, //calculate pace for every pace_sample_size sample
-            Lot_array = [], Lat_array = [], Time_array = [], pace_array = [],
-            radius_scale, csvFileRawData;
+            pace_sample_size = 10, //calculate pace for every pace_sample_size sample
+            Lot_array = [], Lat_array = [], Time_array = [], pace_array = [], Dis_array = [],
+            radius_scale, csvFileRawData, total_dis = 0;
     </script>
 
 </body>

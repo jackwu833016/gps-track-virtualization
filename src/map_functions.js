@@ -5,21 +5,30 @@ function cal_pace(dataSet) {
 
     for (var pos = 0; pos < dataSet.length - pace_sample_size; pos++) {
 
-        if (pos % pace_sample_size != 0) {
-            points_dis += Math.abs(dataSet[pos].X - dataSet[pos + 1].X) +
-                Math.abs(dataSet[pos].Y - dataSet[pos + 1].Y);
-        }
-        else if (pos % pace_sample_size == 0 && pos != 0) {
-            points_dur = (Time_array[pos].getMinutes() + Time_array[pos].getSeconds() / 60) - //duration between 1st and last sample size points
-                (Time_array[pos - pace_sample_size].getMinutes() + Time_array[pos - pace_sample_size].getSeconds() / 60);
+        if (pos % pace_sample_size == 0 && pos != 0) {
+            points_dur = (Time_array[pos].getHours() * 60 + Time_array[pos].getMinutes() + Time_array[pos].getSeconds() / 60) - //duration between 1st and last sample size points
+                        (Time_array[pos - pace_sample_size].getHours() * 60 + Time_array[pos - pace_sample_size].getMinutes() + Time_array[pos - pace_sample_size].getSeconds() / 60);
+            
+            points_dis = Dis_array[pos] - Dis_array[pos - pace_sample_size];
+
             pace_array.push(
-                points_dis / points_dur //we use speed here instaed of the actual "pace"
+                points_dur / points_dis
             );
         }
     }
 
     for (var pos2 = dataSet.length - pace_sample_size; pos2 < dataSet.length; pos2++) { //make up the last pace data at the end
         pace_array.push(pace_array[pace_array.length - 1]);
+    }
+
+}
+
+// convert Lat & Lot into Distance and cal total distance
+function cal_dis() {
+    for (var pos = 0; pos < Lot_array.length - 1; pos++) {
+        var dis = dis_Lat_Lot(Lot_array[pos], Lot_array[pos + 1], Lat_array[pos], Lat_array[pos + 1]);
+        Dis_array.push(total_dis);
+        total_dis += dis;
     }
 }
 
@@ -56,22 +65,24 @@ function readin_accessToken(URL) {
         async: false
     });
 
-    if (raw_data == ""){ //accessToken is missing
+    if (raw_data == "") { //accessToken is missing
         printWarn("AccessToken is missing");
     } else return raw_data;
 }
 
-//make map DOM visible 
-function display_map(){
-    var topRow_height = document.getElementById("topRow").clientHeight,
-        
-        map_obj = document.getElementById("map"),
-        browser_height = $(window).height(),
-        browser_width = $(window).width();
+//make map & chart visible 
+function display_map_chart() {
+    document.getElementById("fileInput").style.visibility = "hidden";//hide buttons
+    document.getElementById("demoBtn").style.visibility = "hidden";
 
-        map_obj.style.height = parseFloat(browser_height - topRow_height) + "px"; //set height and width for map object
-        map_obj.style.width = parseFloat(browser_width) + "px";
-        map_obj.style.visibility = "visible";
+    var browser_height = $(window).height(),
+        browser_width = $(window).width(),
+        topRow_height = document.getElementById("topRow").clientHeight,
+        map_obj = document.getElementById("map");
+
+    map_obj.style.height = parseFloat(browser_height - topRow_height) + "px"; //set height and width for map object
+    map_obj.style.width = parseFloat(browser_width) + "px";
+    map_obj.style.visibility = "visible";
 }
 
 //render map in DOM
@@ -80,6 +91,7 @@ function render_map() {
     L.mapbox.accessToken = readin_accessToken("src/accessToken.txt");
 
     csvFileRawData.forEach(converter); //convert csv data into arrays for d3 operations 
+    cal_dis(); //calculate dis between coor and total dis
     cal_pace(csvFileRawData); //calculate pase and store into pase array
 
     map = L.mapbox.map('map', 'mapbox.streets')
