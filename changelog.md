@@ -1,4 +1,9 @@
-#GPS track record Visualizer Changelog
+# GPS track record Visualizer Changelog
+
+## Version 1.1.0
+1. Track Info section added
+2. Head NavBar added
+3. UI improvement
 
 ## Version 1.0.2
 1. Demo mode enabled
