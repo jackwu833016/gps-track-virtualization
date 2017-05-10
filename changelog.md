@@ -1,5 +1,10 @@
 # GPS track record Visualizer Changelog
 
+## Version 1.1.2
+1. Plot color changes with steps
+2. Sample size is configurable 
+3. Display info of selected point on Chart/Map
+
 ## Version 1.1.1
 1. UI improvement
 2. Highlight plot on Map when clicked on chart and vice-versa

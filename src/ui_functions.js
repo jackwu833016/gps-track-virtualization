@@ -11,7 +11,14 @@ function display_map_chart() {
 
     map_obj.style.width = parseFloat(mapPanel_width) + "px";
     map_obj.style.height = parseFloat(mapPanel_width * 0.5) + "px"; //set height and width for map object
+
+    //set the height of the right panel the same as the left one
+    document.getElementById("Info_panel_body").style.height =
+        $("#Map_panel_body").outerHeight(true) + "px";
+
+
     map_obj.style.visibility = "visible";
+    document.getElementById("tabs").style.visibility = "visible";
     document.getElementById("cav_raw_data_textarea").style.visibility = "visible" //make raw data win visible
 }
 
@@ -39,31 +46,35 @@ function render_map() {
         d3.mean(Lat_array)],
         14); //init map and set center viewpoint accroding to data set
 
-    radius_scale = d3.scaleLinear();
-    radius_scale.range([0, 15]);
+    var radius_scale = d3.scaleLinear(), color_scale = d3.scaleLinear();
+    radius_scale.range([0, 20]);
     radius_scale.domain([d3.min(pace_array), d3.max(pace_array)]);
+    color_scale.range(["yellow", "green"]);
+    color_scale.domain([0, Long_array.length]);
 
     //plotting track
     for (var pos = 0; pos < Long_array.length - 1; pos++) {
         var render_circle =
             L.circle([Long_array[pos], Lat_array[pos]], {
-                color: 'red',
-                fillColor: '#f03',
+                color: color_scale(pos), //progressive color changes
+                fillColor: color_scale(pos),
                 fillOpacity: 0.8,
-                radius: radius_scale(pace_array[Math.round(pos / pace_sample_size)]),
+                radius: radius_scale(pace_array[pos]),
                 pos_in_data: pos //store pos in data in object
             });
 
         render_circle.addTo(map); //add plot to map
-
         render_circle.on('click', function (e) { //handler of click events
-            highlight_point_on_chart(e.target.options.pos_in_data);
+            clicked_on_map(e.target.options.pos_in_data);
         })
     }
 }
 
-//Highlight point on chart with input lat and lon
-function highlight_point_on_chart(pos_in_data) {
+//Highlight point on chart and map
+function highlight_point(pos_in_data) {
+
+    if (last_plot_obj != null) last_plot_obj.remove(); //remove marker on map
+
     var loc_x = chart_interactive_interface.getXLocation(pos_in_data),
         marker = document.getElementById("overlay-marker"),
         chart_ele_style = document.getElementsByTagName("rect")[0].getBoundingClientRect(),
@@ -75,19 +86,31 @@ function highlight_point_on_chart(pos_in_data) {
     marker.style.left = loc_x_marker + 30 + "px";
     marker.style.top = chart_ele_style.top + "px";
 
-    // print("pos_in_data: " + pos_in_data +
-    //     ", top " + (chart_ele_style.bottom - chart_ele_style.top) +
-    //     ", left: " + (loc_x_marker + 30) +
-    //     ", height: " + (chart_ele_style.bottom - chart_ele_style.top));
+    //add marker on map as well
+    if (last_plot_obj != null) last_plot_obj.remove(); //remove last marker
+    last_plot_obj = L.marker([Long_array[pos_in_data], Lat_array[pos_in_data]]).addTo(map);
+
+    //display selected data 
+    display_sel_data(pos_in_data);
+
 }
 
-//Highlight input posInArray on Map
-function highlight_plot_on_map(target_pos) {
+//display selected data on "sel data" panel
+function display_sel_data(pos_in_data){
+    var display_ele = document.getElementById("sel_data_info");
+    display_ele.innerHTML = 
+        "<b>Distance: </b>" + Dis_array[pos_in_data].toFixed(2) + " km<br>" +
+        "<b>Pace: </b>" + pace_array[pos_in_data].toFixed(2) + " Min/km <br>" +
+        "<b>Time: </b>" + Time_array[pos_in_data].getHours() + ":" + Time_array[pos_in_data].getMinutes() + ":" + Time_array[pos_in_data].getSeconds() + "<br>" +
+        "<b>Lat: </b>" + Lat_array[pos_in_data] + "<b> Long: </b>" + Long_array[pos_in_data];
 
-    if (last_plot_obj != null) last_plot_obj.remove(); //remove last selection
+    $('#tabs a:last').tab('show')
+}
 
-    //add select point on Map
-    last_plot_obj = L.marker([Long_array[target_pos], Lat_array[target_pos]]).addTo(map);
+//Highlight point on chart 
+function clicked_on_map(pos_in_data){
+    chart_obj.setSelection([]);
+    highlight_point(pos_in_data);
 }
 
 //update position of highlight bar on chart if scrolled (to prevent mispositioning)
@@ -108,13 +131,8 @@ function render_chart() {
     //processing data for chart rendering
     pace_sample_size += 1;
     for (var pos = 0; pos < Long_array.length; pos++) {
-        var pace_data = function () { //make up the empty data slot by placing pevious pace data
-            if (pos % pace_sample_size != 0) {
-                return pace_array[Math.round(pos / pace_sample_size)];
-            } else {
-                return pace_array[pos];
-            }
-        }();
+
+        var pace_data = pace_array[pos];
 
         if (pos % Math.round(Time_array.length / numOfLable_horiz) == 0) { //only store hour and minute
             time_label_array.push((Time_array[pos].getHours().toString() + ":" + Time_array[pos].getMinutes().toString()));
@@ -128,6 +146,8 @@ function render_chart() {
 
         chartDataSet.push(push_data);
     }
+
+    pace_sample_size--; //reset sample size after calculation
 
     //start loadin chart
     google.charts.setOnLoadCallback(function () {
@@ -153,13 +173,13 @@ function render_chart() {
             }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('chartRow'));  // Instantiate and draw the chart.
+        chart_obj = new google.visualization.LineChart(document.getElementById('chartRow'));  // Instantiate and draw the chart.
 
         //add handler & listener for "select" event
         function selectHandler() {
-            var selectedItem = chart.getSelection()[0];
+            var selectedItem = chart_obj.getSelection()[0];
             if (selectedItem) {
-                highlight_plot_on_map(selectedItem.row); //pass selected data point to function that plot on map
+                highlight_point(selectedItem.row); //pass selected data point to function that plot on map
             }
         }
 
@@ -169,10 +189,43 @@ function render_chart() {
         };
 
         //add listener
-        google.visualization.events.addListener(chart, 'select', selectHandler);
-        google.visualization.events.addListener(chart, 'ready', get_interactive_interface_chart.bind(chart, data));
+        google.visualization.events.addListener(chart_obj, 'select', selectHandler);
+        google.visualization.events.addListener(chart_obj, 'ready', get_interactive_interface_chart.bind(chart_obj, data));
 
         //render chart
-        chart.draw(data, options);
+        chart_obj.draw(data, options);
     });
+}
+
+//function handle sample size editing
+function sample_size_change(mode) {
+    function update_sample_size_input() {
+        document.getElementById("sample_size_input").value = pace_sample_size;
+    }
+    switch (mode) {
+        case "add":
+            pace_sample_size++;
+            update_sample_size_input();
+            break;
+
+        case "sub":
+            if (pace_sample_size > 1) {
+                pace_sample_size--;
+                update_sample_size_input();
+            }
+            break;
+    }
+}
+
+//function handle redering and recalculation after variable changes
+function re_process() {
+
+    //remove rendered DOM
+    map.remove();
+
+    //reset all data sets
+    Long_array = []; Lat_array = []; Time_array = []; pace_array = []; Dis_array = []; total_dis = 0;
+
+    //restart calculation and rendering process
+    startAnalysis();
 }
