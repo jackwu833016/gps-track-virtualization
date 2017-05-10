@@ -72,9 +72,9 @@ function highlight_point_on_chart(pos_in_data) {
     //moving marker to target position
     marker.style.visibility = "visible";
     marker.style.height = chart_ele_style.bottom - chart_ele_style.top + "px";
-    marker.style.left = loc_x_marker  + 30+ "px";
+    marker.style.left = loc_x_marker + 30 + "px";
     marker.style.top = chart_ele_style.top + "px";
-    print(document.getElementsByTagName("body")[0].scrollTop);
+
     // print("pos_in_data: " + pos_in_data +
     //     ", top " + (chart_ele_style.bottom - chart_ele_style.top) +
     //     ", left: " + (loc_x_marker + 30) +
@@ -88,6 +88,14 @@ function highlight_plot_on_map(target_pos) {
 
     //add select point on Map
     last_plot_obj = L.marker([Long_array[target_pos], Lat_array[target_pos]]).addTo(map);
+}
+
+//update position of highlight bar on chart if scrolled (to prevent mispositioning)
+function update_highlight_bar_pos() {
+    var marker = document.getElementById("overlay-marker"),
+        chart_ele_style = document.getElementsByTagName("rect")[0].getBoundingClientRect();
+
+    marker.style.top = chart_ele_style.top + "px";
 }
 
 //all operation of rendering chart
