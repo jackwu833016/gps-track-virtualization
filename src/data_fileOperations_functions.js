@@ -4,7 +4,6 @@ function cal_pace(dataSet) {
     var avg_pace, points_dis = 0, points_dur; //distance and duration between sample_size points
 
     for (var pos = 0; pos < dataSet.length - pace_sample_size; pos++) {
-
         if (pos % pace_sample_size == 0 && pos != 0) {
             points_dur = (Time_array[pos].getHours() * 60 + Time_array[pos].getMinutes() + Time_array[pos].getSeconds() / 60) - //duration between 1st and last sample size points
                 (Time_array[pos - pace_sample_size].getHours() * 60 + Time_array[pos - pace_sample_size].getMinutes() + Time_array[pos - pace_sample_size].getSeconds() / 60);
@@ -14,13 +13,23 @@ function cal_pace(dataSet) {
             pace_array.push(
                 points_dur / points_dis
             );
+        }else if(pos != 0){
+            pace_array.push(
+                pace_array[pace_array.length - 1]
+            );
         }
     }
 
-    for (var pos2 = dataSet.length - pace_sample_size; pos2 < dataSet.length; pos2++) { //make up the last pace data at the end
-        pace_array.push(pace_array[pace_array.length - 1]);
+    //make up the last "pace_sample_size" ele
+    for(var pos = dataSet.length - pace_sample_size; pos < dataSet.length; pos++){
+      pace_array.push(pace_array[pace_array.length - 1]);
+
     }
 
+    //place back missing ele at the beginning, since the first "pace_sample_size" elements can't be calculated until pointer reach "pace_sample_size"
+    for(var pos = pace_sample_size - 1; pos >= 0; pos--){
+        pace_array[pos] = pace_array[pace_sample_size];
+    }
 }
 
 // convert Lat & Long into Distance and cal total distance

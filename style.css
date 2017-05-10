@@ -11,7 +11,7 @@
     border: none;
     resize: none;
 }
-#track_info{
+#track_info, #sel_data_info{
     margin-left: 1em;
 }
 #Info_panel_body{ 
@@ -25,6 +25,12 @@
     border-left: solid green;
     visibility: hidden;
     overflow-y: auto;
+}
+#tabs{
+    visibility: hidden;
+}
+#info, #config, #sel_data_info{
+    margin-top: 0.8em;
 }
 
 /*Load custom font*/
@@ -47,8 +53,5 @@ html, body {
 @media (min-width: 992px){ /* md screen*/
     #Info_panel_col{
         padding-left: 0px;
-    }
-    #cav_raw_data_textarea{
-        height: 102px !important;
     }
 }
