@@ -21,7 +21,7 @@
 
     <!--Bootstrap file-->
     <link rel="stylesheet" href="src/lib/bootstrap.min.css" />
-    <script src="src/lib/jquery-3.2.1.min.js"></script>
+    <script src="src/lib/bootstrap.min.js"></script>
 
     <!--Google Charts Library & components-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -30,50 +30,78 @@
     </script>
 
     <!--core js & css files-->
-    <script src="src/map_functions.js"></script>
-    <script src="src/chart_functions.js"></script>
-    <script src="src/functions.js"></script>
+    <script src="src/ui_functions.js"></script>
+    <script src="src/data_fileOperations_functions.js"></script>
     <link href='style.css' rel='stylesheet' />
 
 </head>
 
 <body>
+    <!--Head Nav bar-->
     <nav class="navbar navbar-default" id="navBar">
         <div class="container-fluid">
             <a class="navbar-brand"><b>GPS track Visualizer</b> by Jack Wu</a>
-            <a class="navbar-right navbar-brand" href="https://github.com/jackwu833016/gps-track-virtualization">
-                <img alt="view on GitHub" src="src/github_icon.png" style="height: 25px">
+            <a data-toggle="tooltip" data-placement="left" title="View source code and features at GitHub" alt="view on GitHub" class="navbar-right navbar-brand"
+                href="https://github.com/jackwu833016/gps-track-virtualization">
+                <img src="src/github_icon.png" style="height: 25px">
             </a>
             <label class="btn btn-default navbar-btn" id="fileInput">
                 Upload .CSV File 
                 <input style="display: none" type="file" onchange="handleFiles(this.files)">
             </label>
-            <button type="button" class="btn btn-default navbar-btn" id="demoBtn" onclick="demoMode()">Demo</button>
+            <button type="button" data-toggle="tooltip" data-placement="right" title="Use sample .csv file" class="btn btn-default navbar-btn"
+                id="demoBtn" onclick="demoMode()">Demo</button>
         </div>
     </nav>
 
-    <div class="container-fluid nopaddingmargin" id="content_container">
+    <!--Contents-->
+    <div class="container-fluid" id="content_container">
         <div class="row" id="topRow">
             <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-xs-12">
-                <div id="chartRow" style="width: 100%"></div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Info Chart</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="chartRow" style="width: 100%"></div>
+                        <div id="overlay-marker"></div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12" id="InfoDiv">
-                <!--track info-->
-                <div class="row">
-                    <p id="track_info"></p>
+
+            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12" id="Info_panel_col">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Track Info</h3>
+                    </div>
+                    <div class="panel-body" id="Info_panel_body">
+                        <!--track info-->
+                        <div class="row">
+                            <p id="track_info"></p>
+                        </div>
+                        <!--csv raw data-->
+                        <div class="row">
+                            <textarea readonly wrap id="cav_raw_data_textarea" style="visibility: hidden"></textarea>
+                        </div>
+                    </div>
                 </div>
-                <!--csv raw data-->
-                <div class="row">
-                    <textarea readonly wrap id="cav_raw_data_textarea" style="visibility: hidden">
-                    </textarea>
-                </div>
+
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div id="map" style="visibility: hidden"></div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Map</h3>
+                    </div>
+                    <!--render map here-->
+                    <div class="panel-body" id="map_panel">
+                        <div id="map" style="visibility: hidden"></div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -81,8 +109,14 @@
         //--global variables
         var map,
             pace_sample_size = 10, //calculate pace for every pace_sample_size sample
-            Lot_array = [], Lat_array = [], Time_array = [], pace_array = [], Dis_array = [],
-            radius_scale, csvFileRawData, total_dis = 0;
+            Long_array = [], Lat_array = [], Time_array = [], pace_array = [], Dis_array = [],
+            radius_scale, csvFileRawData, total_dis = 0,
+            last_plot_obj, chart_interactive_interface;
+
+        //--init tooltip
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 
 </body>

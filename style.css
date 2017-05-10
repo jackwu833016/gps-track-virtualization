@@ -4,28 +4,51 @@
 }
 
 #cav_raw_data_textarea{
+    min-height: 0px;
     height: 100%;
     width: 90%;
+    margin-left: 15px;
+    border: none;
     resize: none;
-    border: none; 
 }
-nav{
-    margin-bottom: 5px !important;
+#track_info{
+    margin-left: 1em;
 }
+#Info_panel_body{ 
+    height: 0px; /*set to 0 height when nothing is loaded*/
+}
+#overlay-marker{ /*the interactive line in CSS*/
+    height: 100%;
+    position: fixed;
+    top: 0;
+    border-left-width: 0.5px;
+    border-left: solid green;
+    visibility: hidden;
+    overflow-y: auto;
+}
+
+/*Load custom font*/
+@font-face {
+  font-family: "Roboto Slab";
+  src: url("src/lib/RobotoSlab-Regular.ttf");
+  }
 
 /*Disable horizontal scroll*/
 html, body {
     max-width: 100% !important;
     overflow-x: hidden !important;
+    font-family: 'Roboto Slab', serif;
 }
+
 /*Responsive styling*/
-@media (min-width: 768px){
-    #InfoDiv{
-        margin-left: 2em;
-    }
+@media (min-width: 768px){ /* small screen*/
+
 }
-@media (min-width: 992px){
-    #InfoDiv{
-        margin-left: 0px;
+@media (min-width: 992px){ /* md screen*/
+    #Info_panel_col{
+        padding-left: 0px;
+    }
+    #cav_raw_data_textarea{
+        height: 102px !important;
     }
 }
